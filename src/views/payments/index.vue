@@ -2,7 +2,7 @@
   <div class="box">
     <panel :arr="arr">
       <div class="ml-auto">
-        <el-button type="primary" @click="queryTabel" class="mr-2">查看</el-button>
+        <el-button type="primary" @click="queryTabel" class="mr-2">查询</el-button>
         <el-button type="primary" @click="dialogVisible = true" class="mr-2">添加付款</el-button>
         <el-button type="primary" @click="queryTabel" class="mr-2">付款记录</el-button>
       </div>
@@ -14,7 +14,6 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :page-size="10" :current-page.sync="listQuery.pageIndex"></el-pagination>
     <el-dialog title="添加付款" width="700px" :visible.sync="dialogVisible">
       <editComponents @change="dialogVisible = false"></editComponents>
     </el-dialog>
@@ -22,7 +21,9 @@
 </template>
 
 <script>
+import mixin from "@/mixin/mixin";
 export default {
+  mixins: [mixin],
   components: {
     editComponents: () => import("./components/index")
   },
@@ -31,8 +32,6 @@ export default {
       dialogVisible: false,
       arr: [{ label: "采购商", model: "", placeholder: "", span: 5, type: "page", data: [], id: "customer_id" }],
       listQuery: {
-        pageIndex: 1,
-        pageSize: 10,
         ascription: 1
       },
       tableHeader: [
@@ -46,9 +45,17 @@ export default {
       tableData: []
     };
   },
+  watch: {
+    data: {
+      handler(val) {
+        this.arr[0].data = val.supplier_customers;
+      },
+      immediate: true
+    }
+  },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/payments", this.listQuery);
+      let res = await this.$post("bills/payments", this.querySearch());
       this.tableData = res.orders;
     }
   },

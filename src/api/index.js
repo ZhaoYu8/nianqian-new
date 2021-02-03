@@ -29,8 +29,8 @@ instance.interceptors.request.use(
       current_member = router.currentRoute.query.current_member;
     } else {
       if (process.env.NODE_ENV === "development") {
-        current_org = localStorage.getItem("current_org") || "11112";
-        current_member = localStorage.getItem("current_member") || "1";
+        current_org = localStorage.getItem("current_org") || "11113";
+        current_member = localStorage.getItem("current_member") || "10";
       } else {
         current_org = localStorage.getItem("current_org");
         current_member = localStorage.getItem("current_member");

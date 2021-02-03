@@ -8,7 +8,11 @@
 <script>
 import menus from "@/components/menu";
 export default {
-  components: { menus }
+  components: { menus },
+  async mounted() {
+    let res = await this.$global.data.bind(this)();
+    this.$store.commit("increment", res);
+  }
 };
 </script>
 
@@ -19,6 +23,7 @@ export default {
   display: flex;
   .menus {
     flex-basis: 240px;
+    flex-shrink: 0;
   }
   .main {
     flex-grow: 1;

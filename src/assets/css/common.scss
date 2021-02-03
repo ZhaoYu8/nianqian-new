@@ -56,6 +56,25 @@ body {
     height: 100%;
     box-sizing: border-box;
   }
+  .el-range-separator {
+    width: 40px !important;
+  }
+  .el-form--inline .el-form-item__label {
+    text-align-last: justify;
+    min-width: 5vw;
+    white-space: nowrap;
+  }
+  .el-form-item__content {
+    flex: 1;
+    margin-bottom: 10px;
+    .el-select {
+      width: 100%;
+    }
+    .el-date-editor--daterange,
+    .el-date-editor--date {
+      width: 100%;
+    }
+  }
 }
 // 每个页面都嵌套一个
 .box {

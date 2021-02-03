@@ -1,10 +1,17 @@
 <template>
   <el-card class="no-p-b">
     <el-row :gutter="20">
-      <el-form label-position="left" class="d-flex flex-wrap" :inline="true">
+      <el-form label-position="left" class="d-flex flex-wrap" :inline="true" label-width="100px">
         <el-col :span="item.span || 6" v-for="(item, index) in arr" :key="item.label + index" :class="item.class || special">
           <el-form-item :label="item.label + '：'" class="form-item">
-            <el-input size="small " v-model="item.model" :placeholder="item.placeholder || '请输入'" v-if="!item.type" @change="change(item)"></el-input>
+            <el-input
+              size="small "
+              v-model="item.model"
+              :placeholder="item.placeholder || '请输入'"
+              :type="item.type || 'text'"
+              v-if="!item.type || item.type === 'textarea'"
+              @change="change(item)"
+            ></el-input>
             <el-select
               size="small"
               filterable

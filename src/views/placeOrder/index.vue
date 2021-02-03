@@ -11,14 +11,9 @@ export default {
   data() {
     return {
       arr: [
-        { label: "账单", path: "bill" },
-        { label: "供应商账单", path: "supplier" },
-        { label: "生产商账单", path: "produce" },
-        { label: "收款单", path: "receipts" },
-        { label: "采购商付款单", path: "payments" },
-        { label: "生产商付款单", path: "producePayments" },
-        { label: "采购商付款统计", path: "payments_total" },
-        { label: "生产商付款统计", path: "payments_total_2" }
+        { label: "订单信息", path: "orderInfo" },
+        { label: "采购单信息", path: "paymentsInfo" },
+        { label: "加工单信息", path: "produceOrder" }
       ],
       val: ""
     };

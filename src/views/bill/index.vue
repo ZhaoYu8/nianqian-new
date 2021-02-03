@@ -9,35 +9,36 @@
       <el-table :data="tableData" style="width: 100%" border ref="firstTable" stripe>
         <el-table-column header-align="center" :align="item.align || 'center'" :label="item.label" :width="item.width" v-for="(item, index) in tableHeader" :key="item.label + index">
           <template slot-scope="scope">
-          {{ scope.row[item.id] }}
+            {{ scope.row[item.id] }}
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :page-size="10" :current-page.sync="listQuery.pageIndex"></el-pagination>
+    <el-pagination background layout="total, prev, pager, next, jumper" :total="total" :current-page.sync="listQuery.page" @current-change="queryTabel"></el-pagination>
   </div>
 </template>
 
 <script>
+import mixin from "@/mixin/mixin";
 export default {
+  mixins: [mixin],
   data() {
     return {
       arr: [
         { label: "客户名称", model: "", placeholder: "", span: 5, type: "page", data: [], id: "customer_id" },
-        { label: "业务员", model: "", placeholder: "", span: 5, type: "page", data: [], id: "saler_id" },
-        { label: "开单时间", model: "", placeholder: "", span: 7, type: "daterange", id: "delivery_date_min" },
-        { label: "订单编号", model: "", placeholder: "", span: 5, id: "product_name" }
+        { label: "业务员", model: "", placeholder: "", span: 5, type: "page", data: [], id: "member_id" },
+        { label: "开单时间", model: "", placeholder: "", span: 7, type: "daterange", id: "billing_date" },
+        { label: "订单编号", model: "", placeholder: "", span: 5, id: "order_serial" }
       ],
       listQuery: {
-        pageIndex: 1,
-        pageSize: 10
+        page: 1
       },
       tableHeader: [
-        { label: "订单编号", id: "order_num" },
+        { label: "订单编号", id: "order_num", width: 130 },
         { label: "开单时间", id: "billing_date", width: "100" },
         { label: "客户名称", id: "customer_name", width: "230" },
         { label: "产品编号", id: "product_serial", width: "230" },
-        { label: "产品名称", id: "product_name", width: "230" },
+        { label: "产品名称", id: "order_serial", width: "230" },
         { label: "产品规格", id: "product_field" },
         { label: "完成时间", id: "completed_at", align: "right" },
         { label: "订单数量", id: "quantity", align: "right" },
@@ -46,16 +47,27 @@ export default {
         { label: "总价", id: "total_price" },
         { label: "备注", id: "note" }
       ],
-      tableData: []
+      tableData: [],
+      total: 0
     };
+  },
+  watch: {
+    data: {
+      handler(val) {
+        this.arr[0].data = val.normaler_customers;
+        this.arr[1].data = val.members;
+      },
+      immediate: true
+    }
   },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/list", this.listQuery);
+      let res = await this.$post("bills/list", this.querySearch());
       this.tableData = res.orders;
+      this.total = res.paginate_meta.total_count;
     }
   },
-  mounted() {
+  async mounted() {
     this.queryTabel();
   }
 };

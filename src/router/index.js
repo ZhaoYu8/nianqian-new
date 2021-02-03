@@ -58,9 +58,28 @@ const routes = [
         ]
       },
       {
-        path: "me",
-        component: () => import("../views/me/index"),
-        name: "me"
+        path: "placeOrder",
+        component: () => import("../views/placeOrder/index"),
+        name: "placeOrder",
+        redirect: "/orderInfo",
+        children: [
+          {
+            path: "/orderInfo",
+            component: () => import("../views/orderInfo/index"),
+            name: "orderInfo"
+          },
+          {
+            path: "/paymentsInfo",
+            component: () => import("../views/paymentsInfo/index"),
+            name: "paymentsInfo"
+          },
+          {
+            path: "/produceOrder",
+            component: () => import("../views/produceOrder/index"),
+            name: "produceOrder"
+          },
+           
+        ]
       }
     ]
   }

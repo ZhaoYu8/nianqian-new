@@ -2,7 +2,7 @@
   <div class="box">
     <panel :arr="arr">
       <div class="ml-auto">
-        <el-button type="primary" @click="queryTabel" class="mr-2">查看</el-button>
+        <el-button type="primary" @click="queryTabel" class="mr-2">查询</el-button>
       </div>
     </panel>
     <div class="pt-10 table">
@@ -20,19 +20,17 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :page-size="10" :current-page.sync="listQuery.pageIndex"></el-pagination>
   </div>
 </template>
 
 <script>
+import mixin from "@/mixin/mixin";
 export default {
+  mixins: [mixin],
   data() {
     return {
       arr: [{ label: "客户名称", model: "", placeholder: "", span: 5, type: "page", data: [], id: "customer_id" }],
-      listQuery: {
-        pageIndex: 1,
-        pageSize: 10
-      },
+      listQuery: {},
       tableHeader: [
         { label: "年份", id: "year" },
         { label: "总金额", id: "receipt_amount" },
@@ -48,12 +46,32 @@ export default {
       tableData: []
     };
   },
+  watch: {
+    data: {
+      handler(val) {
+        this.arr[0].data = val.normaler_customers;
+      },
+      immediate: true
+    }
+  },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/receipts", this.listQuery);
+      let res = await this.$post("bills/receipts", this.querySearch());
       this.tableData = res.orders;
     },
-    async save() {}
+    async save(row) {
+      await this.$post("order_receipts/for_create", {
+        order_receipt: {
+          ...row,
+          ...{
+            received_date: moment(row.received_date).format("YYYY-MM--DD"),
+            spending_type: 0,
+            amount: parseFloat(row.amount)
+          }
+        }
+      });
+      this.$message.success("保存成功！");
+    }
   },
   mounted() {
     this.queryTabel();

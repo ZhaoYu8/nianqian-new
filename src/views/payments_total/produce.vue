@@ -14,19 +14,18 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :page-size="10" :current-page.sync="listQuery.pageIndex"></el-pagination>
   </div>
 </template>
 
 <script>
+import mixin from "@/mixin/mixin";
 export default {
+  mixins: [mixin],
   data() {
     return {
-      arr: [{ label: "年份", model: "", placeholder: "", span: 7, type: "date", dateType: "year", id: "delivery_date_min" }],
+      arr: [{ label: "年份", model: "", placeholder: "", type: "select", data: [], id: "year" }],
       listQuery: {
-        ascription: 2,
-        pageIndex: 1,
-        pageSize: 10
+        ascription: 2
       },
       tableHeader: [
         { label: "采购商", id: "order_num" },
@@ -39,13 +38,21 @@ export default {
   },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/payments_total", this.listQuery);
+      let res = await this.$post("bills/payments_total", this.querySearch());
       this.tableData = res.orders;
     }
   },
-  mounted() {
-    this.queryTabel();
-  }
+  watch: {
+    data: {
+      handler(val) {
+        this.arr[0].data = val.years;
+        this.arr[0].model = val.years[val.years.length - 1].id;
+        this.queryTabel();
+      },
+      immediate: true
+    }
+  },
+  mounted() {}
 };
 </script>
 
