@@ -28,10 +28,10 @@ export default {
         ascription: 2
       },
       tableHeader: [
-        { label: "采购商", id: "order_num" },
-        { label: "订单金额", id: "billing_date" },
-        { label: "已付款", id: "customer_name" },
-        { label: "未付款", id: "product_serial" }
+        { label: "采购商", id: "customer_name" },
+        { label: "订单金额", id: "payment_total" },
+        { label: "已付款", id: "payment_out" },
+        { label: "未付款", id: "unpay" }
       ],
       tableData: []
     };

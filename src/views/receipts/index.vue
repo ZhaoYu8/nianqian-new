@@ -11,7 +11,7 @@
           <template slot-scope="scope">
             <template v-if="item.id === 'update'">
               <el-button type="primary" size="medium" @click="save(scope.row)">保存</el-button>
-              <el-button type="success" size="medium">收款记录</el-button>
+              <el-button type="success" size="medium" @click="show(scope.row)">收款记录</el-button>
             </template>
             <el-input v-model="scope.row[item.id]" size="medium" v-if="item.type === 'input'" v-focus :placeholder="`请输入${item.label}`" />
             <el-date-picker v-model="scope.row[item.id]" v-else-if="item.type === 'date'" :placeholder="`请选择${item.label}`" type="date" />
@@ -20,6 +20,9 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="" :visible.sync="dialogVisible" width="1200px">
+      <z-table />
+    </el-dialog>
   </div>
 </template>
 
@@ -27,8 +30,12 @@
 import mixin from "@/mixin/mixin";
 export default {
   mixins: [mixin],
+  components: {
+    "z-table": () => import("./components/table")
+  },
   data() {
     return {
+      dialogVisible: false,
       arr: [{ label: "客户名称", model: "", placeholder: "", span: 5, type: "page", data: [], id: "customer_id" }],
       listQuery: {},
       tableHeader: [
@@ -50,6 +57,8 @@ export default {
     data: {
       handler(val) {
         this.arr[0].data = val.normaler_customers;
+        this.arr[0].model = val.normaler_customers[0].id;
+        this.queryTabel();
       },
       immediate: true
     }
@@ -60,6 +69,10 @@ export default {
       this.tableData = res.orders;
     },
     async save(row) {
+      if (!row.amount.trim()) {
+        this.$message.error('收款不能为空！')
+        return;
+      }
       await this.$post("order_receipts/for_create", {
         order_receipt: {
           ...row,
@@ -71,11 +84,19 @@ export default {
         }
       });
       this.$message.success("保存成功！");
+      row.amount = '';
+      row.receipt_bank = '';
+      row.use_way = '';
+      row.note = '';
+    },
+    show(row) {
+      this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$bus.$emit("showDetail", row);
+      });
     }
   },
-  mounted() {
-    this.queryTabel();
-  }
+  mounted() {}
 };
 </script>
 

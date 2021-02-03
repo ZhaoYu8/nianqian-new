@@ -16,14 +16,11 @@ Vue.use(components);
 Object.assign(Vue.prototype, {
   $post: http.post,
   $get: http.get,
-  $global: global
+  $global: global,
+  $bus: new Vue()
 });
 let vm = new Vue({
   router,
   store,
   render: (h) => h(App)
 }).$mount("#app");
-
-Object.assign(Vue.prototype, {
-  $bus: vm
-});
