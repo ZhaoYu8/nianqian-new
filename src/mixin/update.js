@@ -6,11 +6,11 @@ export default {
     };
   },
   created() {
-    this.client = new OSS({
-      accessKeyId: "LTAI4GHFFo8Fk4XrRiTkLKj5",
-      accessKeySecret: "okbXSQv1X9joSxVPIOKZniMO6e1kYs",
-      bucket: "tengdabs"
-    });
+    // this.client = new OSS({
+    //   accessKeyId: "LTAI4GHFFo8Fk4XrRiTkLKj5",
+    //   accessKeySecret: "okbXSQv1X9joSxVPIOKZniMO6e1kYs",
+    //   bucket: "tengdabs"
+    // });
   },
   computed: {},
   methods: {
