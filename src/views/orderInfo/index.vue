@@ -1,6 +1,7 @@
 <template>
   <div class="box">
-    <panel :arr="arr">
+    <el-progress v-show="showProgress" :text-inside="true" :stroke-width="15" :percentage="progress"></el-progress>
+    <panel :arr="arr" @change="change">
       <div class="ml-auto">
         <el-button type="primary" @click="queryTabel" class="mr-2">查询</el-button>
         <el-button type="primary" @click="dialogVisible = true" class="mr-2">下单</el-button>
@@ -10,19 +11,25 @@
       <el-table :data="tableData" style="width: 100%" border ref="firstTable" stripe>
         <el-table-column type="index" width="80" label="序号" align="center"> </el-table-column>
         <el-table-column header-align="center" :align="item.align || 'center'" :label="item.label" :prop="item.id" :width="item.width" v-for="(item, index) in tableHeader" :key="item.label + index">
-          <template slot-scope="scope">{{ scope.row[item.id] }} </template>
+          <template slot-scope="scope">
+            <template v-if="item.id === 'update'">
+              <el-button type="success" size="mini" @click="edit(scope.row)">修改</el-button>
+            </template>
+            <template v-else>{{ scope.row[item.id] }}</template>
+          </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :page-size="10" :current-page.sync="listQuery.page"></el-pagination>
-    <el-dialog title="" :visible.sync="dialogVisible" width="1400px" top="30px">
-      <edit />
+    <el-dialog title="下单" :visible.sync="dialogVisible" width="1400px" top="30px">
+      <edit @cancel="cancel" />
     </el-dialog>
   </div>
 </template>
 
 <script>
+import mixin from "@/mixin/mixin";
 export default {
+  mixins: [mixin],
   components: {
     edit: () => import("./components/index")
   },
@@ -32,13 +39,12 @@ export default {
       arr: [
         { label: "客户名称", model: "", placeholder: "", type: "page", data: [], id: "customer_id" },
         { label: "下单时间", model: "", placeholder: "", span: 7, type: "daterange", id: "billing_date" },
-        { label: "销售", model: "", placeholder: "", type: "page", data: [], id: "customer_id" },
-        { label: "负责人", model: "", placeholder: "", type: "page", data: [], id: "customer_id" },
-        { label: "发货时间", model: "", placeholder: "", span: 7, type: "daterange", id: "billing_date" },
-        { label: "关键字", model: "", placeholder: "", id: "customer_id" }
+        { label: "销售", model: "", placeholder: "", type: "page", data: [], id: "saler_id" },
+        { label: "负责人", model: "", placeholder: "", type: "page", data: [], id: "member_id" },
+        { label: "发货时间", model: "", placeholder: "", span: 7, type: "daterange", id: "delivery_date" },
+        { label: "关键字", model: "", placeholder: "", id: "order_serial" }
       ],
       listQuery: {
-        page: 1,
         ascription: 1
       },
       tableHeader: [
@@ -50,20 +56,49 @@ export default {
         { label: "备注", id: "unpay_total" },
         { label: "当前状态", id: "unpay_total" },
         { label: "更新时间", id: "unpay_total" },
-        { label: "最后操作人", id: "unpay_total" }
+        { label: "最后操作人", id: "unpay_total" },
+        { label: "操作", id: "update" }
       ],
       tableData: []
     };
   },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/payments", this.listQuery);
+      let res = await this.$post("bills/payments", this.querySearch());
       this.tableData = res.orders;
+    },
+    cancel() {
+      this.dialogVisible = false;
+      this.queryTabel();
+    },
+    async change(val) {
+      if (val.id === "customer_id") {
+        if (!val.model) {
+          this.arr[3].data = [];
+          this.arr[3].model = "";
+          return;
+        }
+        let res = await this.$post("common/contacts", {
+          customer_id: val.model
+        });
+        this.arr[3].data = res.contacts;
+      }
+    },
+    edit(val) {
+      console.log(val);
     }
   },
-  mounted() {
-    this.queryTabel();
-  }
+  watch: {
+    data: {
+      handler(val) {
+        if (!val.normaler_customers) return;
+        this.arr[0].data = val.normaler_customers;
+        this.queryTabel();
+      },
+      immediate: true
+    }
+  },
+  mounted() {}
 };
 </script>
 
