@@ -240,7 +240,8 @@ export default {
                 member_id: this.formOptions.member_id
               },
               products_attributes: arr,
-              order_files_attributes: list
+              order_files_attributes: list,
+              ascription_type: 1
             }
           }
         };

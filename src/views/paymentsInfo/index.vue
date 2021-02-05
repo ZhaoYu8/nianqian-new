@@ -13,6 +13,7 @@
         <el-table-column header-align="center" :align="item.align || 'center'" :label="item.label" :prop="item.id" :width="item.width" v-for="(item, index) in tableHeader" :key="item.label + index">
           <template slot-scope="scope">
             <template v-if="item.id === 'update'">
+              <el-button type="primary" size="mini" @click="palyDetail(scope.row)">详情</el-button>
               <el-button type="success" size="mini" @click="edit(scope.row)">修改</el-button>
             </template>
             <template v-else>{{ scope.row[item.id] }}</template>
@@ -103,6 +104,9 @@ export default {
       this.$nextTick(() => {
         this.$bus.$emit("updateInfo", {});
       });
+    },
+    palyDetail(row) {
+      window.open(`http://gdw.tengdabs.cn/${row.detail_url}`);
     }
   },
   watch: {

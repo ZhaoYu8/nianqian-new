@@ -1,10 +1,8 @@
 import { Loading, Notification } from "element-ui";
-let baseURL = "https://www.gendanwang.com/v1/api";
+let baseURL = "http://gdw.tengdabs.cn/v1/tengda_api";
 import router from "../router";
 if (process.env.NODE_ENV === "development") {
   baseURL = "/api";
-} else if (process.env.VUE_APP_CURRENTMODE === "prod") {
-  baseURL = "https://yy.yiyuanmaidian.com/v1/api";
 }
 let instance = axios.create({
   baseURL: baseURL,

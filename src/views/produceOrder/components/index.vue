@@ -14,7 +14,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="相关业务单：" prop="order_id">
-            <page v-model="formOptions.order_id" size="small" placeholder="请选择" :data="orders"></page>
+            <page v-model="formOptions.order_id" size="small" :disabled="!!updateData.id" placeholder="请选择" :data="orders"></page>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -242,10 +242,12 @@ export default {
                 member_id: this.formOptions.member_id
               },
               products_attributes: arr,
-              order_files_attributes: list
+              order_files_attributes: list,
+              ascription_type: 2
             }
           }
         };
+        options.order_id = this.formOptions.order_id;
         if (this.updateData.id) {
           options.id = this.updateData.id;
           options.order.tracking_attributes.id = this.updateData.tracking_id;

@@ -109,6 +109,9 @@ export default {
     },
     to(row) {
       this.$router.push({ name: "produceOrder", query: { id: row.id } });
+    },
+    palyDetail(row) {
+      window.open(`http://gdw.tengdabs.cn/${row.detail_url}`);
     }
   },
   watch: {
