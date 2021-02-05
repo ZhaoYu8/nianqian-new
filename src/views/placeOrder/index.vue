@@ -18,6 +18,14 @@ export default {
       val: ""
     };
   },
+  watch: {
+    $route: {
+      handler(val) {
+        this.val = this.arr.findIndex((r) => r.path === this.$route.name) + "";
+      },
+      immediate: true
+    }
+  },
   methods: {
     change() {
       this.$router.push({ name: this.arr[this.val].path });

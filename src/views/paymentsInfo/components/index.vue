@@ -3,8 +3,8 @@
     <el-row :gutter="20">
       <el-form ref="form" :model="formOptions" :rules="rules" label-width="120px">
         <el-col :span="6">
-          <el-form-item label="下单客户：" prop="customer_id">
-            <page v-model="formOptions.customer_id" size="small" placeholder="请选择" :data="formData.normaler_customers" @change="change"></page>
+          <el-form-item label="采购商：" prop="customer_id">
+            <page v-model="formOptions.customer_id" size="small" placeholder="请选择" :data="formData.supplier_customers" @change="change"></page>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -12,11 +12,11 @@
             <el-date-picker v-model="formOptions.billing_date" size="small"> </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <!-- <el-col :span="6">
           <el-form-item label="订单编号：">
-            <el-input v-model="formOptions.order_num" disabled size="small" placeholder="自动生成"></el-input>
+            <el-input v-model="formOptions.order_num" size="small" placeholder="请输入"></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="6">
           <el-form-item label="币种：" prop="currency_id">
             <el-select v-model="formOptions.currency_id" size="small" placeholder="请选择">
@@ -86,7 +86,7 @@
     <div class="d-flex justify-content-end align-items-center"><el-button type="primary" icon="el-icon-edit" circle size="mini" class="m-2" @click="addProduct"></el-button>新增</div>
     <el-table :data="tableData" style="width: 100%" border ref="firstTable" stripe>
       <el-table-column type="index" width="80" label="序号" align="center"> </el-table-column>
-      <el-table-column header-align="center" align="center" label="产品编号" :prop="serial_number">
+      <el-table-column header-align="center" align="center" label="产品类型" :prop="serial_number">
         <template slot-scope="scope">
           <el-input v-model="scope.row.serial_number" placeholder="请输入"></el-input>
         </template>
@@ -96,13 +96,13 @@
           <el-input v-model="scope.row.name" placeholder="请输入"></el-input>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="产品类型" :prop="custom_field_group_id">
+      <!-- <el-table-column header-align="center" align="center" label="产品类型" :prop="custom_field_group_id">
         <template slot-scope="scope">
           <el-select v-model="scope.row.custom_field_group_id" placeholder="请选择">
             <el-option :label="item.name" :value="item.id" v-for="item in data.groups" :key="item.id"></el-option>
           </el-select>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column header-align="center" align="center" label="产品单价" :prop="price">
         <template slot-scope="scope">
           <el-input v-model="scope.row.price" placeholder="请输入" @change="changeMoney(scope.row)"></el-input>
@@ -151,7 +151,7 @@ export default {
       formOptions: {
         customer_id: "",
         billing_date: moment().format("YYYY-MM-DD"),
-        order_num: "",
+        // order_num: "",
         currency_id: "",
         contact_id: "",
         payment_type: "",
@@ -171,7 +171,7 @@ export default {
       },
       tableData: [],
       defaultData: {
-        custom_field_group_id: "",
+        // custom_field_group_id: "",
         name: "",
         serial_number: undefined,
         price: "",
@@ -202,7 +202,6 @@ export default {
     },
     save() {
       this.$refs.form.validate(async (valid) => {
-        // 验证
         if (!valid) return;
         let type = false;
         this.tableData.map((r, i) => {
@@ -219,7 +218,6 @@ export default {
           }
         });
         if (type) return;
-        // 赋值
         let list = {},
           arr = {};
         if (this.fileList.length) {
@@ -251,7 +249,7 @@ export default {
           options.order.tracking_attributes.id = this.updateData.tracking_id;
         }
         await this.$post(`orders/${this.updateData.id ? "for_update" : "for_create"}`, {
-          ascription_type: 0,
+          ascription_type: 1,
           ...options
         });
         this.$message.success("下单成功！");
@@ -280,15 +278,9 @@ export default {
         })
         .catch((r) => {});
     },
-    // 无论新增 修改都会触发 区别在于 修改有详情数据
-    async setOptions() {
+    setOptions() {
       this.addProduct();
-      // 新增 自动生成订单编号
-      if (!this.updateData.id) {
-        let res = await this.$post("common/order_num");
-        this.formOptions.order_num = res.order_num;
-        return;
-      }
+      if (!this.updateData.id) return;
       for (const key in this.formOptions) {
         this.formOptions[key] = this.updateData[key];
       }
@@ -297,7 +289,7 @@ export default {
         return {
           ...r,
           ...{
-            custom_field_group_id: Number(r.custom_field_group_id),
+            // custom_field_group_id: Number(r.custom_field_group_id),
             price: r.price + "",
             quantity: r.quantity + ""
           }
@@ -312,7 +304,7 @@ export default {
   },
   mounted() {
     this.formData = {
-      normaler_customers: this.data.normaler_customers, // 下单客户
+      supplier_customers: this.data.supplier_customers, // 下单客户
       templates: this.data.templates, // 进度模板
       currencies: this.data.currencies, // 币种
       members: this.data.members, // 销售

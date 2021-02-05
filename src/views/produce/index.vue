@@ -14,7 +14,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-pagination background layout="total, prev, pager, next, jumper" :total="total" :current-page.sync="listQuery.page" @current-change="queryTabel"></el-pagination>
+    <el-pagination page-size="20" background layout="total, prev, pager, next, jumper" :total="total" :current-page.sync="listQuery.page" @current-change="queryTabel"></el-pagination>
   </div>
 </template>
 

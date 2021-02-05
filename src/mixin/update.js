@@ -31,7 +31,9 @@ export default {
         .then((res) => {
           console.log(res);
         })
-        .catch(() => {});
+        .catch((err) => {
+          console.log(err);
+        });
     },
     removeUpload(index) {
       this.$confirm(`确定移除？`)

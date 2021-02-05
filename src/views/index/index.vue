@@ -11,7 +11,7 @@ export default {
   components: { menus },
   async mounted() {
     let res = await this.$global.data.bind(this)();
-    this.$store.commit("increment", res);
+    this.$store.commit("setData", res);
   }
 };
 </script>

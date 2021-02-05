@@ -1,14 +1,19 @@
 import { mapState } from "vuex";
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   created() {},
   computed: {
-    ...mapState(["data"])
+    ...mapState(["data", "orders"])
   },
   methods: {
+    async initOptions() {
+      if (this.orders.length) return;
+      let res = await this.$post("common/orders");
+      this.$store.commit("setOrders", res.orders);
+      console.log(this.orders);
+    },
     querySearch() {
       let options = JSON.parse(JSON.stringify(this.listQuery));
       this.arr.map((r) => {

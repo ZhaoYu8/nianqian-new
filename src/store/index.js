@@ -5,11 +5,15 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    data: []
+    data: [],
+    orders:[]
   },
   mutations: {
-    increment(state, val) {
+    setData(state, val) {
       state.data = val;
+    },
+    setOrders(state, val){
+      state.orders = val;
     }
   }
 });

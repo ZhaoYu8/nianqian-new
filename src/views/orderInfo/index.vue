@@ -4,7 +4,7 @@
     <panel :arr="arr" @change="change">
       <div class="ml-auto">
         <el-button type="primary" @click="queryTabel" class="mr-2">查询</el-button>
-        <el-button type="primary" @click="dialogVisible = true" class="mr-2">下单</el-button>
+        <el-button type="primary" @click="addInfo" class="mr-2">下单</el-button>
       </div>
     </panel>
     <div class="pt-10 table">
@@ -13,13 +13,18 @@
         <el-table-column header-align="center" :align="item.align || 'center'" :label="item.label" :prop="item.id" :width="item.width" v-for="(item, index) in tableHeader" :key="item.label + index">
           <template slot-scope="scope">
             <template v-if="item.id === 'update'">
+              <el-button type="primary" size="mini" @click="palyDetail(scope.row)">详情</el-button>
               <el-button type="success" size="mini" @click="edit(scope.row)">修改</el-button>
+            </template>
+            <template v-if="item.id === 'produce_info'">
+              <el-button type="text" @click="to(scope.row)">{{ scope.row[item.id] }}</el-button>
             </template>
             <template v-else>{{ scope.row[item.id] }}</template>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-pagination page-size="20" background layout="total, prev, pager, next, jumper" :total="total" :current-page.sync="listQuery.page" @current-change="queryTabel"></el-pagination>
     <el-dialog title="下单" :visible.sync="dialogVisible" width="1400px" top="30px">
       <edit @cancel="cancel" />
     </el-dialog>
@@ -42,34 +47,37 @@ export default {
         { label: "销售", model: "", placeholder: "", type: "page", data: [], id: "saler_id" },
         { label: "负责人", model: "", placeholder: "", type: "page", data: [], id: "member_id" },
         { label: "发货时间", model: "", placeholder: "", span: 7, type: "daterange", id: "delivery_date" },
-        { label: "关键字", model: "", placeholder: "", id: "order_serial" }
+        { label: "关键字", model: "", placeholder: "", id: "query_key" }
       ],
       listQuery: {
-        ascription: 1
+        ascription_type: 0,
+        page: 1
       },
       tableHeader: [
-        { label: "订单日期", id: "billing_date" },
-        { label: "客户名称", id: "order_num" },
-        { label: "订单产品", id: "customer_name" },
-        { label: "订单金额", id: "amount_total" },
-        { label: "生产单信息", id: "payed_total", width: "230" },
-        { label: "备注", id: "unpay_total" },
-        { label: "当前状态", id: "unpay_total" },
-        { label: "更新时间", id: "unpay_total" },
-        { label: "最后操作人", id: "unpay_total" },
-        { label: "操作", id: "update" }
+        { label: "下单日期", id: "billing_date" },
+        { label: "客户名称", id: "customer_name" },
+        { label: "订单产品", id: "product_name" },
+        { label: "订单金额", id: "total_amount" },
+        { label: "生产单信息", id: "produce_info", width: "230" },
+        { label: "备注", id: "note" },
+        { label: "当前状态", id: "current_info" },
+        { label: "更新时间", id: "updated_at" },
+        { label: "最后操作人", id: "updated_by" },
+        { label: "操作", id: "update", width: 200 }
       ],
-      tableData: []
+      tableData: [],
+      total: 0
     };
   },
   methods: {
     async queryTabel() {
-      let res = await this.$post("bills/payments", this.querySearch());
+      let res = await this.$post("orders/list", this.querySearch());
       this.tableData = res.orders;
+      this.total = res.paginate_meta.total_count;
     },
-    cancel() {
+    cancel(type) {
       this.dialogVisible = false;
-      this.queryTabel();
+      if (type) this.queryTabel();
     },
     async change(val) {
       if (val.id === "customer_id") {
@@ -84,8 +92,23 @@ export default {
         this.arr[3].data = res.contacts;
       }
     },
-    edit(val) {
-      console.log(val);
+    async edit(val) {
+      let res = await this.$post("orders/for_edit", {
+        id: val.id
+      });
+      this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$bus.$emit("updateInfo", res.order);
+      });
+    },
+    addInfo() {
+      this.dialogVisible = true;
+      this.$nextTick(() => {
+        this.$bus.$emit("updateInfo", {});
+      });
+    },
+    to(row) {
+      this.$router.push({ name: "produceOrder", query: { id: row.id } });
     }
   },
   watch: {
@@ -93,6 +116,7 @@ export default {
       handler(val) {
         if (!val.normaler_customers) return;
         this.arr[0].data = val.normaler_customers;
+        this.arr[2].data = val.members;
         this.queryTabel();
       },
       immediate: true
