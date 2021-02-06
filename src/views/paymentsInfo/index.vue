@@ -16,6 +16,9 @@
               <el-button type="primary" size="mini" @click="palyDetail(scope.row)">详情</el-button>
               <el-button type="success" size="mini" @click="edit(scope.row)">修改</el-button>
             </template>
+            <template v-else-if="item.id === 'produce_info'">
+              <el-button type="text" @click="palyDetail(scope.row)">{{ scope.row.produce_info }}</el-button>
+            </template>
             <template v-else>{{ scope.row[item.id] }}</template>
           </template>
         </el-table-column>
@@ -51,10 +54,11 @@ export default {
         page: 1
       },
       tableHeader: [
-        { label: "下单日期", id: "billing_date" },
-        { label: "客户名称", id: "customer_name" },
-        { label: "订单产品", id: "product_name" },
-        { label: "订单金额", id: "total_amount" },
+        { label: "采购单编号", id: "produce_info", width:240 },
+        // { label: "下单日期", id: "billing_date" },
+        { label: "供应商名称", id: "customer_name" },
+        { label: "采购商产品", id: "product_name" },
+        { label: "采购单金额", id: "total_amount" },
         // { label: "生产单信息", id: "produce_info", width: "230" },
         { label: "备注", id: "note" },
         { label: "当前状态", id: "current_info" },
