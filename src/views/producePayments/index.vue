@@ -73,7 +73,16 @@ export default {
     },
     async queryTabel() {
       let res = await this.$post("bills/payments", this.querySearch());
-      this.tableData = res.orders;
+      this.tableData = res.orders.map((r) => {
+        return {
+          ...r,
+          ...{
+            amount_total: r.amount_total.toFixed(2),
+            payed_total: r.payed_total.toFixed(2),
+            unpay_total: r.unpay_total.toFixed(2)
+          }
+        };
+      });;
     }
   },
   mounted() {}

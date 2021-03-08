@@ -34,7 +34,7 @@ export default {
         page: 1
       },
       tableHeader: [
-        { label: "订单编号", id: "order_num", width: 130 },
+        { label: "订单编号", id: "order_num", width: 200 },
         { label: "开单时间", id: "billing_date", width: "100" },
         { label: "客户名称", id: "customer_name", width: "230" },
         { label: "产品编号", id: "product_serial", width: "230" },

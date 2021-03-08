@@ -39,12 +39,22 @@ export default {
   methods: {
     async queryTabel() {
       let res = await this.$post("bills/payments_total", this.querySearch());
-      this.tableData = res.orders;
+      this.tableData = res.orders.map((r) => {
+        return {
+          ...r,
+          ...{
+            payment_total: r.payment_total.toFixed(2),
+            payment_out: r.payment_out.toFixed(2),
+            unpay: r.unpay.toFixed(2)
+          }
+        };
+      });
     }
   },
   watch: {
     data: {
       handler(val) {
+        if (!val.years) return;
         this.arr[0].data = val.years;
         this.arr[0].model = val.years[val.years.length - 1].id;
         this.queryTabel();

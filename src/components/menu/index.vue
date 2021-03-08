@@ -8,6 +8,9 @@
       <i class="el-icon-menu"></i>
       <span slot="title">下单</span>
     </el-menu-item>
+    <div class="back">
+      <a href="http://gdw.tengdabs.cn/trackings/orders" target="_blank">返回跟单王</a>
+    </div>
   </el-menu>
 </template>
 
@@ -15,7 +18,7 @@
 export default {
   data() {
     return {
-      active: ''
+      active: ""
     };
   },
   methods: {
@@ -28,3 +31,14 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.back {
+  text-align: center;
+  font-size: 20px;
+  margin-top: 20px;
+  a {
+    color: #409eff;
+    text-decoration: none;
+  }
+}
+</style>
