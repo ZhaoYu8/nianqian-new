@@ -1,19 +1,2 @@
-# newpro
-
-## Project setup
-```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# 跟单王 单独拆出来的下单页
+![1615789055.jpg](https://gitee.com/zhaoyu8/tuchuang/raw/master/1615789055.jpg)
